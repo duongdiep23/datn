@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang chủ</title>
+  <!--CSS FILES-->
+  <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendor/aos/aos.css">
+  <link rel="stylesheet" href="/assets/vendor/swiper/swiper-bundle.min.css">
+  <link rel="stylesheet" href="/assets/vendor/glightbox/css/glightbox.min.css">
+
+  <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!--JAVASCRIPT FILES-->
+  <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
+
+</head>
+<body>
+<th:block th:replace="~{web/fragments/header :: header}"></th:block>
+<!-- End Header -->
+<section id="slider">
+  <div class="row mx-0 d-inline-block px-0">
+    <div id="carouselExampleFade" class="carousel slide carousel-fade px-0"  data-bs-ride="carousel" data-bs-interval="5000" data-aos="fade-up">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="assets/images/slide1.jpg" class="d-block w-100" alt="">
+        </div>
+        <div class="carousel-item">
+          <img src="assets/images/slide2.jpg" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="assets/images/slide3.jpg" class="d-block w-100" alt="...">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+      <!-- <a href="#" class="stretched-link"></a> -->
+    </div>
+  </div>
+</section>
+<!-- End Slider -->
+
+<!-- ======= About Section ======= -->
+<section id="about" class="about">
+  <div class="container" data-aos="fade-up">
+    <div class="col-md-12 offset-md-3 circle">
+
+    </div>
+    <div class="col-md-12 offset-md-3 circle1">
+
+    </div>
+    <div class="section-header">
+      <h2>Về chúng tôi</h2>
+      <p>Một vài thông tin chúng tôi dành cho bạn</p>
+    </div>
+
+    <div class="row gy-4 mt-2">
+      <div class="col-lg-7 position-relative about-img" data-aos="fade-up" data-aos-delay="150">
+        <img src="/assets/images/about.jpg" alt="">
+      </div>
+      <div class="col-lg-5 d-flex align-items-end" data-aos="fade-up" data-aos-delay="300">
+        <div class="content ps-0 ps-lg-5">
+          <p class="fst-italic">
+            <strong class="brand-name">D<span class="logo-dot">.</span>Shop</strong> - website mua sắm thời trang trực tuyến hàng đầu <strong>Việt Nam</strong> Bạn đang tìm kiếm những mẫu thời trang mới nhất hiện nay? Hãy mua sắm ngay hôm nay tại D.Shop.
+          </p>
+          <ul>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <strong>D.Shop món quà tặng người thân thật ý nghĩa!</strong>
+              <span>D.Shop sẽ gợi ý cho bạn những mẫu áo thật phù hợp và ý nghĩa để tặng người thân, bạn bè. Chúng tôi sẽ làm bạn hài lòng với sự lựa chọn của mình bằng giá tốt nhất và chất lượng dịch vụ hoàn hảo. </span>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <strong>D.Shop - Phù hợp với mọi túi tiền </strong>
+              <span>D.Shop luôn cập nhật những mẫu áo mới nhất. Đặc biệt, D.Shop còn có nhiều đợi khuyến mãi, giảm giá đặc biệt.
+                    Thời trang chất lượng cao, phù hợp túi tiền - chỉ có tại D.Shop! </span>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <strong>Phong cách hiện đại - thuận tiện </strong>
+              <span>Bạn có thể mua sắm thoải mái trên D.Shop mà không có bất kỳ lo lắng nào: Trả hàng trong vòng 7 - 10 ngày kể từ ngày nhận hàng. </span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section><!-- End About Section -->
+
+<!-- ======= product Section ======= -->
+<section id="product" class="product">
+  <div class="container" data-aos="fade-up">
+    <div class="section-header">
+      <h2>Sản phẩm</h2>
+      <p>Sản phẩm nổi bật năm 2023</p>
+    </div>
+
+    <div class="row py-3">
+      <div class="col-lg-12 d-flex justify-content-center">
+        <ul id="product-filters">
+          <li data-filter="*" class="filter-active">Tất cả</li>
+          <th:block th:each="category : ${categories}">
+            <li th:data-filter="'.' + 'filter-ca' + ${category.id}" th:text="${category.title}"></li>
+          </th:block>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row product-container">
+      <th:block th:each="product: ${products}">
+        <div th:class="'col-lg-3 col-md-6 product-item filter-ca' + ${product.categoryId}">
+          <img th:src="${product.imageResponses[0].url}" class="img-fluid" alt="">
+          <div class="product-info">
+            <h4 th:text="${product.name}"></h4>
+            <p>
+              <span th:if="${product.discountPrice != 0}" class="price" th:style="'color:#e3e2df;'">[[${product.discountPrice}]]</span>
+              <span th:if="${product.discountPrice != 0}" class="price" th:style="'text-decoration:line-through; color:#959595; font-size: 14px;'">[[${product.price}]] </span>
+              <span th:if="${product.discountPrice == 0}" class="price" th:style="'color:#e3e2df;'">[[${product.price}]] </span>
+
+            </p>
+            <a th:src="${product.imageResponses[0].url}" data-gallery="productGallery" class="product-lightbox preview-link" title="App 1"><i class="fa-solid fa-plus"></i></a>
+            <a th:href="@{${'/home/product/detail/' + product.id}}" class="details-link" title="More Details"><i class="fa-solid fa-link"></i></a>
+          </div>
+        </div>
+      </th:block>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <a th:href="@{/home/product}" class="btn view-all-product">Xem tất cả sản phẩm</a>
+      </div>
+    </div>
+  </div>
+</section><!-- End product Section -->
+
+
+<!-- ======= Events Section ======= -->
+<section id="events" class="events mt-4 pt-3">
+  <div class="container-fluid" data-aos="fade-up">
+
+    <div class="section-header">
+      <h2>Sự kiện</h2>
+      <p>Những sự kiện dành cho bạn </p>
+    </div>
+    <div class="row mt-5">
+      <div class="col-lg-10 mx-auto">
+        <div class="slides-events swiper" data-aos="fade-up" data-aos-delay="100">
+          <div class="swiper-wrapper">
+
+            <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(/assets/images/event-1.jpg)">
+              <h3>Chào mừng Quốc tế Phụ nữ</h3>
+              <p class="description">
+                Thời gian: 07/03 - 08/03
+              </p>
+            </div><!-- End Event item -->
+
+            <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(/assets/images/event-2.jpg)">
+              <h3>Siêu sale kỳ lễ</h3>
+              <p class="description">
+                Thời gian: 30/04 - 01/05
+              </p>
+            </div><!-- End Event item -->
+
+            <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(/assets/images/event-3.jpg)">
+              <h3>Mùa hè bùng nổ</h3>
+              <p class="description">
+                Thời gian: 19/06 - 20/06
+              </p>
+            </div><!-- End Event item -->
+
+            <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(/assets/images/event-4.jpg)">
+              <h3>Happy Birthday D.Shop</h3>
+              <p class="description">
+                Thời gian: 22/07 - 23/07
+              </p>
+            </div><!-- End Event item -->
+
+            <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(/assets/images/event-3.jpg)">
+              <h3>Kỷ niệm Quốc Khánh</h3>
+              <p class="description">
+                Thời gian: 01/09 - 02/09
+              </p>
+            </div><!-- End Event item -->
+
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section><!-- End Events Section -->
+
+<!-- ======= Contact Section ======= -->
+<section id="contact" class="contact mt-5">
+  <div class="container" data-aos="fade-up">
+
+    <div class="section-header">
+      <h2>Liên hệ</h2>
+      <p>Bạn cần hỗ trợ?</p>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <iframe style="border:0; width: 83.3333%; height: 350px;margin-left: 50%;transform: translate(-50%, 0);" src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d56241.64966654339!2d105.83492192409867!3d21.027811679804184!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1676341810903!5m2!1svi!2s" frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <div class="container" data-aos="fade-up">
+
+    <div class="row mt-5">
+
+      <div class="col-lg-4">
+        <div class="info">
+          <div class="address">
+            <i class="icon fa-solid fa-location-dot"></i>
+            <h4>Địa chỉ</h4>
+            <p>Hiệp Hoà, Bắc Giang</p>
+          </div>
+
+          <div class="email">
+            <i class="fa-regular fa-envelope"></i>
+            <h4>Email</h4>
+            <p>dshop@gmail.com</p>
+          </div>
+
+          <div class="phone">
+            <i class="icon fa-solid fa-phone-flip"></i>
+            <h4>Điện thoại</h4>
+            <p>0865 618 661</p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-lg-8 mt-5 mt-lg-0">
+
+        <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <input type="text" name="name" class="form-control" id="name" placeholder="Tên của bạn." required>
+            </div>
+            <div class="col-md-6 form-group mt-3 mt-md-0">
+              <input type="email" class="form-control" name="email" id="email" placeholder="Địa chỉ hòm thư." required>
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <input type="text" class="form-control" name="subject" id="subject" placeholder="Tiêu đề." required>
+          </div>
+          <div class="form-group mt-3">
+            <textarea class="form-control" name="message" rows="5" placeholder="Lời nhắn cho chúng tôi" required></textarea>
+          </div>
+          <div class="my-3">
+            <div class="loading">Vui lòng đợi...</div>
+            <div class="error-message"></div>
+            <div class="sent-message">Lời nhắn của bạn đã được gửi. Cảm ơn!</div>
+          </div>
+          <div class="text-center"><button type="submit">Gửi lời nhắn</button></div>
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+</section><!-- End Contact Section -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer" class="footer mt-5">
+
+  <div class="container">
+    <div class="row gy-3">
+      <div class="col-lg-3 col-md-6 d-flex">
+        <i class="bi bi-geo-alt icon"></i>
+        <div>
+          <h4>Địa chỉ</h4>
+          <p>
+            Hợp Thịnh <br>
+            Hiệp Hoà, Bắc Giang<br>
+          </p>
+        </div>
+
+      </div>
+
+      <div class="col-lg-3 col-md-6 footer-links d-flex">
+        <i class="bi bi-telephone icon"></i>
+        <div>
+          <h4>Thông tin liên hệ</h4>
+          <p>
+            <strong>Điện thoại:</strong> +84 865 618 661<br>
+            <strong>Email:</strong> dshop@gmail.com<br>
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 footer-links d-flex">
+        <i class="bi bi-clock icon"></i>
+        <div>
+          <h4>Thời gian mở cửa</h4>
+          <p>
+            <strong>Mon - Sat</strong> 8AM - 22PM
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 footer-links">
+        <h4>Theo dõi chúng tôi</h4>
+        <div class="social-links d-flex">
+          <a href="#" class="twitter"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#" class="facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#" class="instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="linkedin"><i class="fa-brands fa-linkedin"></i></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="copyright">
+      &copy; Copyright <strong><span>DuongDiep</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+      <!-- All the links in the footer should remain intact. -->
+      <!-- You can delete the links only if you purchased the pro version. -->
+      <!-- Licensing information: https://bootstrapmade.com/license/ -->
+      <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/yummy-bootstrap-restaurant-website-template/ -->
+      Designed by <a href="#">DuongDiep</a>
+    </div>
+  </div>
+
+</footer><!-- End Footer -->
+<!-- End Footer -->
+<div id="preloader"></div>
+
+
+<!--Vendor JavaScript Files-->
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/aos/aos.js"></script>
+<script src="/assets/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="/assets/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="/assets/vendor/php-email-form/validate.js"></script>
+
+<script type="text/javascript" src="/assets/js/main.js"></script>
+</body>
+</body>
+</html>
