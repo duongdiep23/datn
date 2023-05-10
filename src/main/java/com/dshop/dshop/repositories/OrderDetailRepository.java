@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.dshop.dshop.models.OrderDetail;
 import com.dshop.dshop.models.User;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -27,4 +29,13 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
 	OrderDetail findByUserAndId(User user, Long orderDetailId);
 
 	long countByType(int type);
+
+	@Query("SELECT COUNT(o) FROM OrderDetail o WHERE o.createdDate LIKE CONCAT ('%', :date, '%') AND o.type = :type")
+	long countByCreatedDateAndType(@Param("date") String date, @Param("type") int type);
+
+	@Query("SELECT SUM (o.totalAmount) FROM OrderDetail o WHERE o.createdDate LIKE CONCAT ('%', :date, '%') AND o.type = :type")
+	long revenueByCreatedDateAndType(@Param("date") String date,@Param("type") int type);
+
+	@Query("SELECT COUNT(o) FROM OrderDetail o WHERE o.createdDate LIKE CONCAT ('%', :date, '%') AND o.status = :status AND o.type = :type")
+	long countByCreatedDateAndStatusAndType(@Param("date") String date,@Param("status") int status,@Param("type") int type);
 }

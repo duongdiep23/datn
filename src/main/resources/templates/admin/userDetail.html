@@ -57,11 +57,6 @@
               <i class="fa-regular fa-circle"></i><span>Chi tiết đơn hàng</span>
             </a>
           </li>
-          <li>
-            <a href="components-badges.html">
-              <i class="fa-regular fa-circle"></i><span>Badges</span>
-            </a>
-          </li>
         </ul>
       </li><!-- End user Nav -->
 
@@ -82,13 +77,8 @@
             </a>
           </li>
           <li>
-            <a href="forms-editors.html">
-              <i class="fa-regular fa-circle"></i><span>Form Editors</span>
-            </a>
-          </li>
-          <li>
-            <a href="forms-validation.html">
-              <i class="fa-regular fa-circle"></i><span>Form Validation</span>
+            <a th:href="@{/admin/product}" >
+              <i class="fa-regular fa-circle"></i><span>Chi tiết sản phẩm sản phẩm</span>
             </a>
           </li>
         </ul>
@@ -96,7 +86,7 @@
 
       <li class="nav-item">
         <a class="nav-link " data-bs-target="#tables-nav" data-bs-toggle="collapse" th:href="@{/admin/user}">
-          <i class="fa-solid fa-users-viewfinder"></i><span class="navbar-text">Người dùng</span>
+          <i class="fa-solid fa-users-viewfinder"></i><span class="navbar-text">Quản lý tài khoản</span>
           <i class="fa-solid fa-chevron-down ms-auto"></i>
         </a>
         <ul id="tables-nav" class="nav-content  " data-bs-parent="#sidebar-nav">
@@ -106,7 +96,7 @@
             </a>
           </li>
           <li>
-            <a th:href="@{/admin/user/create}" th:class="'active'">
+            <a th:href="@{/admin/user/create}">
               <i class="fa-regular fa-circle"></i><span>Thêm mới tài khoản</span>
             </a>
           </li>
@@ -130,12 +120,12 @@
           </li>
           <li>
             <a th:href="@{/admin/category/create}">
-              <i class="fa-regular fa-circle"></i><span>Thêm danh mục</span>
+              <i class="fa-regular fa-circle"></i><span>Thêm mới danh mục</span>
             </a>
           </li>
           <li>
-            <a href="charts-echarts.html">
-              <i class="fa-regular fa-circle"></i><span>ECharts</span>
+            <a th:href="@{/admin/category}" class="active">
+              <i class="fa-regular fa-circle"></i><span>Chi tiết danh mục</span>
             </a>
           </li>
         </ul>

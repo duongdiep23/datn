@@ -259,4 +259,19 @@ public class ProductServiceImpl implements ProductService {
 
 	}
 
+	@Override
+	public void actionProduct(Long productId, int action) {
+		Product product = productRepository.findById(productId).orElseThrow();
+		try{
+			if(action == 0){
+				product.setStatus(1);
+			}else if (action == 1){
+				product.setStatus(0);
+			}
+			productRepository.save(product);
+		}catch (Exception ex){
+			System.out.print("Ex: " + ex);
+		}
+	}
+
 }

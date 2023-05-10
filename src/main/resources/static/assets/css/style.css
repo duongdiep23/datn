@@ -477,7 +477,7 @@ a.nav-user img{
 #slider{
     position: relative;
     overflow: inherit;
-    margin-top: 76px;
+    margin-top: -32px;
 }
 #slider .circle{
     margin-top: -30px;
@@ -1488,8 +1488,8 @@ About Us
     color: #3D4C53;
 }
 .login-des span{
-    color: #009f7f;
-    border-bottom: 2px solid #009f7f;
+    color: #d44376;
+    border-bottom: 2px solid #d44376;
 }
 .login-view .card{
     border-color: rgba(100, 100, 111, 0.2);
@@ -1516,13 +1516,13 @@ About Us
     transform: translate(-50%, -50%);
 }
 .btn.btn-login{
-    background-color: #009f7f;
+    background-color: #d44376;
     color: #fff;
     border: none;
 }
 
 .btn.btn-login:hover{
-    background-color: #029275;
+    background-color: #bb1153e6;
     color: #fff;
 }
 .btn-login.py-2{
@@ -1542,7 +1542,7 @@ p.position-absolute{
     transform: translate(50%, 50%);
 }
 .link-register a{
-    color: #009f7f !important;
+    color: #d44376 !important;
 }
 /*Xử lý thẻ HTML Register*/
 .register-view.bg-light{

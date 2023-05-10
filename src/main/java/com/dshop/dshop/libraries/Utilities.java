@@ -3,8 +3,14 @@ package com.dshop.dshop.libraries;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class Utilities {
@@ -20,26 +26,39 @@ public class Utilities {
 		Date date = new Date();
 		return dateFormat.format(date);
 	}
+	public Date formatToDate(String strDate) throws ParseException {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return formatter.parse(strDate);
+	}
 
-//	/**
-//	 * Method encode password to hexMD5<br>
-//	 * <u><i>Update: 02/03/2023</i></u>
-//	 *
-//	 * @param str
-//	 * @return
-//	 */
-//	public String encodeToMD5(String str) {
-//		return DigestUtils.md5Hex(str).toUpperCase();
-//	}
+	public String formatToStrDate(Date date) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.format(date);
+	}
+	public String formatToStrMonth(Date date) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+		return dateFormat.format(date);
+	}
+	public String formatToStrYear(Date date) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy");
+		return dateFormat.format(date);
+	}
 
-//	/**
-//	 * Method decode password to hexMD5<br>
-//	 * <u><i>Update: 02/03/2023</i></u>
-//	 *
-//	 * @param str
-//	 * @return
-//	 */
-//	public String decodeToMD5(String strMD5) {
-//		return strMD5;
-//	}
+	public List<Date> getRecentDaysList(int numDays) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		List<Date> dateList = new ArrayList<>();
+		LocalDate currentDate = LocalDate.now();
+		for (int i = 0; i < numDays; i++) {
+			LocalDate day = currentDate.minusDays(i);
+			String dateStr = day.format(formatter);
+			try {
+				Date date = new SimpleDateFormat("yyyy/MM/dd").parse(dateStr);
+				dateList.add(date);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		Collections.sort(dateList);
+		return dateList;
+	}
 }

@@ -162,4 +162,16 @@
 
     const priceElements = document.querySelectorAll('.price');
     priceElements.forEach(formatPrice);
+
+    const selectElement = document.querySelector('#number-item');
+        if (selectElement != null){
+            selectElement.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                window.location.href = '/admin/' + selectedValue.replace('-', '?pageSize=');
+            });
+        }
   })();
+
+  function goBack() {
+      window.history.back();
+  }

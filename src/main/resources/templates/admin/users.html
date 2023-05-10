@@ -57,11 +57,7 @@
               <i class="fa-regular fa-circle"></i><span>Chi tiết đơn hàng</span>
             </a>
           </li>
-          <li>
-            <a href="components-badges.html">
-              <i class="fa-regular fa-circle"></i><span>Badges</span>
-            </a>
-          </li>
+
         </ul>
       </li><!-- End user Nav -->
 
@@ -82,13 +78,8 @@
             </a>
           </li>
           <li>
-            <a href="forms-editors.html">
-              <i class="fa-regular fa-circle"></i><span>Form Editors</span>
-            </a>
-          </li>
-          <li>
-            <a href="forms-validation.html">
-              <i class="fa-regular fa-circle"></i><span>Form Validation</span>
+            <a th:href="@{/admin/product}" class="active">
+              <i class="fa-regular fa-circle"></i><span>Chi tiết sản phẩm sản phẩm</span>
             </a>
           </li>
         </ul>
@@ -106,8 +97,13 @@
             </a>
           </li>
           <li>
-            <a href="tables-data.html">
-              <i class="fa-regular fa-circle"></i><span>Data Tables</span>
+            <a th:href="@{/admin/user/create}">
+              <i class="fa-regular fa-circle"></i><span>Thêm mới tài khoản</span>
+            </a>
+          </li>
+          <li>
+            <a href="@{/admin/user}">
+              <i class="fa-regular fa-circle"></i><span>Chi tiết tài khoản</span>
             </a>
           </li>
         </ul>
@@ -119,18 +115,18 @@
         </a>
         <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="charts-chartjs.html">
+            <a href="@{/admin/category}">
               <i class="fa-regular fa-circle"></i><span>Xem danh mục</span>
             </a>
           </li>
           <li>
-            <a href="charts-apexcharts.html">
-              <i class="fa-regular fa-circle"></i><span>ApexCharts</span>
+            <a th:href="@{/admin/category/create}">
+              <i class="fa-regular fa-circle"></i><span>Thêm mới danh mục</span>
             </a>
           </li>
           <li>
-            <a href="charts-echarts.html">
-              <i class="fa-regular fa-circle"></i><span>ECharts</span>
+            <a th:href="@{/admin/category}" class="active">
+              <i class="fa-regular fa-circle"></i><span>Chi tiết danh mục</span>
             </a>
           </li>
         </ul>
@@ -192,7 +188,7 @@
                       <option value="3">15</option>
                       <option value="4">20</option>
                     </select>
-                    <p class="d-inline-block"> đơn hàng trên một trang</p>
+                    <p class="d-inline-block"> tài khoản trên một trang</p>
                   </div><!-- End Search Bar -->
                 </div>
               </div>

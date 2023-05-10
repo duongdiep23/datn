@@ -55,23 +55,8 @@
                           </a>
                       </li>
                       <li>
-                          <a href="components-accordion.html">
-                              <i class="fa-regular fa-circle"></i><span>Accordion</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="components-badges.html">
-                              <i class="fa-regular fa-circle"></i><span>Badges</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="components-breadcrumbs.html">
-                              <i class="fa-regular fa-circle"></i><span>Breadcrumbs</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="components-buttons.html">
-                              <i class="fa-regular fa-circle"></i><span>Buttons</span>
+                          <a th:href="@{/admin/order}">
+                              <i class="fa-regular fa-circle"></i><span>Chi tiết đơn hàng</span>
                           </a>
                       </li>
                   </ul>
@@ -94,13 +79,8 @@
                           </a>
                       </li>
                       <li>
-                          <a href="forms-editors.html">
-                              <i class="fa-regular fa-circle"></i><span>Form Editors</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="forms-validation.html">
-                              <i class="fa-regular fa-circle"></i><span>Form Validation</span>
+                          <a th:href="@{/admin/product}">
+                              <i class="fa-regular fa-circle"></i><span>Chi tiết sản phẩm sản phẩm</span>
                           </a>
                       </li>
                   </ul>
@@ -136,18 +116,18 @@
                   </a>
                   <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                       <li>
-                          <a href="charts-chartjs.html">
+                          <a href="@{/admin/category}">
                               <i class="fa-regular fa-circle"></i><span>Xem danh mục</span>
                           </a>
                       </li>
                       <li>
-                          <a href="charts-apexcharts.html">
-                              <i class="fa-regular fa-circle"></i><span>ApexCharts</span>
+                          <a th:href="@{/admin/category/create}">
+                              <i class="fa-regular fa-circle"></i><span>Thêm mới danh mục</span>
                           </a>
                       </li>
                       <li>
-                          <a href="charts-echarts.html">
-                              <i class="fa-regular fa-circle"></i><span>ECharts</span>
+                          <a th:href="@{/admin/category}" class="active">
+                              <i class="fa-regular fa-circle"></i><span>Chi tiết danh mục</span>
                           </a>
                       </li>
                   </ul>
@@ -179,7 +159,10 @@
               <div class="card">
                 <div class="card-body">
                   <h5 class="card-title">Danh sách sản phẩm</h5>
-
+                    <th:block th:if="${message != ''}">
+                        <span th:if="${message == 'success'}" class="text-success">Cập nhật thông tin thành công!</span>
+                        <span th:if="${message == 'false'}" class="text-danger">Cập nhật thông tin không thành công!</span>
+                    </th:block>
                   <div class="card-button d-flex justify-content-between pt-3">
                     <div class="btn">
                         <a th:href="@{/admin/product/create}">Thêm mới</a>
@@ -203,11 +186,11 @@
                     <div class="col-lg-5 offset-md-3">
                         <div class="number-item pt-3">
 
-                            <select name="number-item" id="" class="form-select" aria-label="number-item">
-                                <option value="1">5</option>
-                                <option value="2">10</option>
-                                <option value="3">15</option>
-                                <option value="4">20</option>
+                            <select name="number-item" id="number-item" class="form-select" aria-label="number-item">
+                                <option value="product-5" th:selected="${pageSize == 5}">5</option>
+                                <option value="product-10" th:selected="${pageSize == 10}">10</option>
+                                <option value="product-15" th:selected="${pageSize == 15}">15</option>
+                                <option value="product-20" th:selected="${pageSize == 20}">20</option>
                             </select>
                             <p class="d-inline-block"> sản phẩm trên một trang</p>
                         </div><!-- End Search Bar -->
@@ -219,19 +202,21 @@
                   <table class="table table-striped datatable">
                     <thead>
                       <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Ảnh</th>
-                        <th scope="col">Tên sản phẩm</th>
-                        <th scope="col" class="description">Mô tả</th>
-                        <th scope="col">Giá bán</th>
-                        <th scope="col">Lượt xem</th>
+                          <th scope="col">#</th>
+                          <th scope="col">Ảnh</th>
+                          <th scope="col">Tên sản phẩm</th>
+                          <th scope="col">Mô tả</th>
+                          <th scope="col">Giá bán</th>
+                          <th scope="col">Lượt xem</th>
+                          <th scope="col">Trạng thái</th>
+                          <th scope="col">Hành động</th>
                       </tr>
                     </thead>
                     <tbody>
                         <tr th:each="product,index : ${products}">
                         <th scope="row"><a href="#" th:utext="${index.index+1}"></a></th>
                         <td>
-                            <img th:src="@{${product.imageResponses[0].url}(timestamp=${#dates.createNow().getTime()})}" class="rounded" alt="">
+                            <img th:src="@{${product.imageResponses[0].url}}" class="rounded" alt="">
                         </td>
                         <td>
                             <a th:href="@{/admin/product/detail/{id}(id = ${product.id})}" >
@@ -239,8 +224,8 @@
                             <span  th:text="${product.sku}" th:style="'font-weight: bold;'"></span>
                             </a>
                         </td>
-                        <td th:if="${product.description.length() >100}" th:text="${product.description.substring(0, 100) +'...'}" class="description"></td>
-                        <td th:if="${product.description.length() <100}" th:text="${product.description}" class="description"></td>
+                        <td th:if="${product.description.length() > 50}" th:text="${product.description.substring(0,50) + '...'}"></td>
+                        <td th:if="${product.description.length() < 50}" th:text="${product.description}"></td>
                         <td>
                             <span th:if="${product.discountPrice != 0}">
                                 <span class="price text-danger" >[[${product.discountPrice}]]</span>
@@ -251,29 +236,79 @@
                             <span th:if="${product.discountPrice == 0}" class="price text-danger" >[[${product.price}]]</span>
                         </td>
                         <td th:utext="${product.visited}"></td>
+                        <td>
+                            <span th:if="${product.getStatus() == 0}" th:class="'badge bg-secondary'" th:text="'Khoá'"></span>
+                            <span th:if="${product.getStatus() == 1}" th:class="'badge bg-success'" th:text="'Hiển thị'"></span>
+                        </td>
+                        <td class="text-center">
+                            <span th:if="${product.getStatus() == 0}">
+                              <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" th:data-bs-target="'#unLock-'+${product.id}"><i class="fa-solid fa-unlock"></i></button>
+                              <div class="modal fade" th:id="'unLock-'+${product.id}" tabindex="-1" th:aria-labelledby="'labelUnLock-'+${product.id}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h1 class="modal-title fs-5" th:id="'labelUnlock-'+${product.id}">Xác nhận mở khoá sản phẩm</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                      Sau khi mở khoá, sản phẩm <strong>[[${product.getSku()}]]</strong>   được hiển thị lại phía khách hàng!!
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                      <form th:action="@{/admin/product/action/{id}(id = ${product.id},ac=0)}" class="d-inline-block" method="post">
+                                        <input type="hidden" name="_method" th:value="PUT">
+                                        <button type="submit" class="btn  btn-danger">Xác nhận</button>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </span>
+                            <span th:if="${product.getStatus() == 1}">
+                              <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" th:data-bs-target="'#lock-'+${product.id}"><i class="fa-solid fa-lock"></i></button>
+                              <div class="modal fade" th:id="'lock-'+${product.id}" tabindex="-1" th:aria-labelledby="'labelLock-'+${product.id}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h1 class="modal-title fs-5" th:id="'labelLock-'+${product.id}">Xác nhận khoá sản phẩm</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                      Sau khi khoá, sản phẩm <strong>[[${product.getSku()}]]</strong>  không được hiển thị phía khách hàng!!
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                      <form th:action="@{/admin/product/action/{id}(id = ${product.id},ac=1)}" class="d-inline-block" method="post">
+                                        <input type="hidden" name="_method" th:value="PUT">
+                                        <button type="submit" class="btn  btn-danger">Xác nhận</button>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </span>
+                        </td>
                     </tr>
                     </tbody>
                   </table>
                 </div><!-- End Recent Sales -->
-
                 <nav aria-label="Page navigation">
                   <ul class="pagination pt-3 d-flex justify-content-center">
                       <!-- Tính toán trang đầu tiên và trang cuối cùng -->
                       <th:block th:with="startPage=${currentPage > 5 ? currentPage - 5 : 0}, endPage=${currentPage < countProduct - 6 ? currentPage + 4 : countProduct - 1}">
-                      <li th:class="${currentPage == startPage} ? 'disabled page-item' : 'page-item'">
-                          <a th:href="@{/admin/product(pageNumber=${currentPage - 1}, pageSize=${pageSize})}" aria-label="Previous" class="page-link">
-                              <span aria-hidden="true"><i class="fa-solid fa-chevron-left"></i></span>
-                          </a>
-                      </li>
-                      <li th:each="page : ${#numbers.sequence(startPage, endPage)}" class="page-item">
-                          <a th:href="@{/admin/product(pageNumber=${page}, pageSize=${pageSize})}" th:text="${page + 1}" th:class="${currentPage == page} ? 'active page-link' : 'page-link'"></a>
-
-                      </li>
-                      <li th:class="${currentPage == endPage} ? 'disabled page-item' : 'page-item'">
-                          <a th:href="@{/admin/product(pageNumber=${currentPage + 1}, pageSize=${pageSize})}" aria-label="Next" class="page-link">
-                              <span aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
-                          </a>
-                      </li>
+                          <li th:class="${currentPage == startPage} ? 'disabled page-item' : 'page-item'">
+                              <a th:href="@{/admin/product(pageNumber=${currentPage - 1}, pageSize=${pageSize})}" aria-label="Previous" class="page-link">
+                                  <span aria-hidden="true"><i class="fa-solid fa-chevron-left"></i></span>
+                              </a>
+                          </li>
+                          <li th:each="page : ${#numbers.sequence(startPage, endPage)}" class="page-item">
+                              <a th:href="@{/admin/product(pageNumber=${page}, pageSize=${pageSize})}" th:text="${page + 1}" th:class="${currentPage == page} ? 'active page-link' : 'page-link'"></a>
+                          </li>
+                          <li th:class="${currentPage == endPage} ? 'disabled page-item' : 'page-item'">
+                              <a th:href="@{/admin/product(pageNumber=${currentPage + 1}, pageSize=${pageSize})}" aria-label="Next" class="page-link">
+                                  <span aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+                              </a>
+                          </li>
                       </th:block>
                   </ul>
                 </nav>

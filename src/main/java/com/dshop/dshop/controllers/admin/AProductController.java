@@ -1,7 +1,8 @@
 package com.dshop.dshop.controllers.admin;
 
 import com.dshop.dshop.models.Category;
-import com.dshop.dshop.models.dtos.CategoryDTO;
+import com.dshop.dshop.models.Image;
+import com.dshop.dshop.models.Size;
 import com.dshop.dshop.models.request.ColorRequest;
 import com.dshop.dshop.models.request.ProductRequest;
 import com.dshop.dshop.models.request.SizeRequest;
@@ -10,29 +11,33 @@ import com.dshop.dshop.models.response.ProductResponse;
 import com.dshop.dshop.models.response.SizeResponse;
 import com.dshop.dshop.models.response.UserResponse;
 import com.dshop.dshop.repositories.CategoryRepository;
+import com.dshop.dshop.repositories.ImageRepository;
+import com.dshop.dshop.repositories.ProductRepository;
+import com.dshop.dshop.repositories.SizeRepository;
 import com.dshop.dshop.services.CategoryService;
 import com.dshop.dshop.utils.GetUserFromToken;
 import com.dshop.dshop.services.ProductService;
 import com.dshop.dshop.utils.JwtUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.io.OutputStream;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -43,15 +48,24 @@ public class AProductController {
 
     private final CategoryRepository categoryRepository;
 
+    private final ImageRepository imageRepository;
+
+    private final SizeRepository sizeRepository;
+
+    private final ProductRepository productRepository;
+
     private final CategoryService categoryService;
 
     private final GetUserFromToken getUserFromToken;
 
     private final JwtUtils jwtUtils;
     @Autowired
-    public AProductController(ProductService productService, CategoryRepository categoryRepository, CategoryService categoryService, GetUserFromToken getUserFromToken, JwtUtils jwtUtils) {
+    public AProductController(ProductService productService, CategoryRepository categoryRepository, ImageRepository imageRepository, SizeRepository sizeRepository, ProductRepository productRepository, CategoryService categoryService, GetUserFromToken getUserFromToken, JwtUtils jwtUtils) {
         this.productService = productService;
         this.categoryRepository = categoryRepository;
+        this.imageRepository = imageRepository;
+        this.sizeRepository = sizeRepository;
+        this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.getUserFromToken = getUserFromToken;
         this.jwtUtils = jwtUtils;
@@ -66,7 +80,9 @@ public class AProductController {
     public String getAllProduct(Model model, HttpServletRequest request,
                                 @RequestParam(defaultValue = "0") int pageNumber,
                                 @RequestParam(defaultValue = "10") int pageSize,
-                                @RequestParam(defaultValue = "id") String sortBy){
+                                @RequestParam(defaultValue = "id") String sortBy,
+                                @RequestParam(value = "message",defaultValue = "")String message){
+        model.addAttribute("message",message);
         model.addAttribute("countProduct",productService.countProduct());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("pageSize", pageSize);
@@ -81,12 +97,23 @@ public class AProductController {
             productResponse.setDescription(p.getDescription());
             productResponse.setVisited(p.getVisited());
             productResponse.setId(p.getId());
+            productResponse.setStatus(p.getStatus());
             return productResponse;
         }).collect(Collectors.toList());
         model.addAttribute("products",productResponses);
         return "admin/products";
     }
-
+    @PutMapping("/product/action/{id}")
+    @Transactional
+    public String actionProduct(@PathVariable("id") Long productId,
+                                @RequestParam("ac") int action){
+        try {
+            productService.actionProduct(productId, action);
+            return "redirect:/admin/product?message=success";
+        }catch (Exception e){
+            return "redirect:/admin/product?message=false";
+        }
+    }
     @ModelAttribute("categoryList")
     public List<Category> getCategories(){
         return categoryRepository.findAll();
@@ -141,8 +168,17 @@ public class AProductController {
     @GetMapping("/product/detail/{id}")
     public String productDetail(ModelMap model, HttpServletRequest request,
                                 HttpServletResponse response, RedirectAttributes redirectAttributes,
-                                @PathVariable("id") Long productId){
+                                @PathVariable("id") Long productId,
+                                @RequestParam(value = "message", defaultValue = "null") String message){
+        if(message != null && !message.equals("")){
+            if(message.equals("success")){
+                model.addAttribute("message", message);
+            }else if (message.equals("false")){
+                model.addAttribute("message",message);
+            }
+        }
         try {
+
             //Lấy thông tin sản phẩm xem chi tiết
             ProductResponse productResponse = productService.getProductById(productId);
             model.addAttribute("productDetail", productResponse);
@@ -162,7 +198,7 @@ public class AProductController {
                     .flatMap(color -> color.getSizeResponses().stream())
                     .map(SizeResponse::getValue)
                     .distinct()
-                    .sorted(Comparator.comparingInt(Integer::parseInt))
+                    .sorted()
                     .toList();
 
             // Lấy thông tin số lượng đã bán của sản phẩm
@@ -176,9 +212,15 @@ public class AProductController {
                     .flatMap(color -> color.getSizeResponses().stream()
                             .map(size -> {
                                 String key = color.getValue() + " / " + size.getValue();
-                                return Map.entry(key, size.getTotal() +"-"+ size.getId());
+                                return Map.entry(key, size.getTotal() + "-" + size.getId());
                             }))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));
+                    .sorted(Map.Entry.comparingByKey(Comparator.naturalOrder()))
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (v1, v2) -> v1,
+                            LinkedHashMap::new
+                    ));
 
             // Gửi dữ liệu đi bằng model map
             model.addAttribute("listColors",listColors);
@@ -187,9 +229,87 @@ public class AProductController {
             model.addAttribute("totalByColorAndSize", totalByColorAndSize);
             return "admin/productDetail";
         }catch (Exception e){
-            return "redirect:/admin/product?err=false";
+            return "redirect:/admin/product?message=false";
         }
+    }
 
+    @PutMapping("/product/update/{id}")
+    @Transactional
+    public String updateProduct(@PathVariable("id") long productId,
+                                @RequestParam("name") String name,
+                                @RequestParam("description") String description,
+                                @RequestParam("price") int price,
+                                @RequestParam("discountPrice") int discountPrice,
+                                @RequestParam("category") long categoryId,
+                                @RequestParam("images") MultipartFile[] images,
+                                @RequestParam("sizes") String sizes){
+        try {
+            ProductRequest productRequest = new ProductRequest();
+            productRequest.setName(name);
+            productRequest.setDescription(description);
+            productRequest.setPrice(price);
+            productRequest.setDiscountPrice(discountPrice);
+            productRequest.setCategoryId(categoryId);
+
+            //Xử lý size (id-số lượng)
+            String[] listSize = sizes.split(",");
+
+            for (String size : listSize) {
+                String[] sizeInfo = size.split("-");
+                long sizeId = Long.parseLong(sizeInfo[0]) ;
+                int total = Integer.parseInt(sizeInfo[1]);
+                // Thực hiện cập nhật giá trị total mới
+                Size size1 = sizeRepository.findById(sizeId).orElseThrow();
+                if (size1.getTotal() != total){
+                    size1.setTotal(total);
+                }
+                sizeRepository.save(size1);
+            }
+
+            //Xử lý thêm ảnh
+            if(images != null){
+                for (MultipartFile file : images) {
+                    // Lấy tên file và extension.
+                    String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+                    String extension = FilenameUtils.getExtension(filename);
+
+                    // Tạo đường dẫn tới file ảnh.
+                    String imagePath = "/assets/images/uploads/" + filename;
+
+                    // Tạo file mới với đường dẫn được chỉ định.
+
+                    File savedFile = new File("D:/dshop/src/main/resources/static/assets/images/uploads/"+ filename);
+
+                    // Lưu file vào đường dẫn.
+                    try (OutputStream outputStream = new FileOutputStream(savedFile)) {
+                        outputStream.write(file.getBytes());
+                    }
+                    // Tạo một đối tượng Image mới và thiết lập thuộc tính url.
+                    Image image = new Image();
+                    image.setUrl(imagePath);
+                    image.setProduct(productRepository.findById(productId).orElseThrow());
+
+                    // Lưu đối tượng Image vào cơ sở dữ liệu.
+                    imageRepository.save(image);
+                }
+            }
+            ProductResponse productResponse = productService.updateProduct(productRequest,productId);
+            return "redirect:/admin/product/detail/"+productId+"?message=success";
+        }catch (Exception e){
+            return "redirect:/admin/product/detail/"+productId+"?message=false";
+        }
+    }
+    @DeleteMapping("/product/detail/deleteImage/{id}")
+    @Transactional
+    public String deleteImage(@PathVariable("id") Long imageId,
+                              @RequestParam("product") Long productId){
+        try{
+            Image image = imageRepository.findById(imageId).orElseThrow();
+            imageRepository.delete(image);
+            return "redirect:/admin/product/detail/"+productId+"?message=success";
+        }catch (Exception e){
+            return "redirect:/admin/product/detail/"+productId+"?message=false";
+        }
     }
 
 }
